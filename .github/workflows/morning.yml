@@ -1,0 +1,40 @@
+name: Morning Bot
+on:
+  schedule:
+    - cron: "0 9,0 * * *"
+jobs:
+  slack:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_USERNAME: sleeping bot
+      SLACK_ICON: https://raw.githubusercontent.com/tkm-developer/my-repo/main/icon/icon2.jpg
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set Slack Message
+        id: set-message
+        run: |
+          HOUR=$(date +'%H')
+          if [ "$HOUR" -eq 9 ]; then
+            echo "::set-output name=slack_title::おはよう"
+            echo "::set-output name=slack_message::朝です"
+          elif [ "$HOUR" -eq 0 ]; then
+            echo "::set-output name=slack_title::おやすみ"
+            echo "::set-output name=slack_message::夜です"
+          fi
+
+      - name: Slack Notification on Success
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          title: ${{ steps.set-message.outputs.slack_title }}
+          text: ${{ steps.set-message.outputs.slack_message }}
+        if: ${{ success() }}
+
+      - name: Slack Notification on Failure
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          title: "失敗"
+          text: "送信に失敗しました"
+        if: ${{ failure() }}

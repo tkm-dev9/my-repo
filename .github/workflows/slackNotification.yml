@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SLACK_USERNAME: nanashi
-      SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+      SLACK_ICON: https://github.com/tkm-developer/my-repo/blob/main/icon/icon.png
       SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
     steps:
       - name: Checkout

@@ -20,26 +20,26 @@ jobs:
         run: |
           HOUR=$(date +'%H')
           if [ "$HOUR" -eq 0 ]; then
-            echo "slack_title=おはよう" >> $GITHUB_ENV
-            echo "slack_message=朝です" >> $GITHUB_ENV
+            echo "SLACK_TITLE=おはよう" >> $GITHUB_ENV
+            echo "SLACK_MESSAGE=朝です" >> $GITHUB_ENV
           elif [ "$HOUR" -eq 15 ]; then
-            echo "slack_title=おやすみ" >> $GITHUB_ENV
-            echo "slack_message=夜です" >> $GITHUB_ENV
+            echo "SLACK_TITLE=おやすみ" >> $GITHUB_ENV
+            echo "SLACK_MESSAGE=夜です" >> $GITHUB_ENV
           else
-            echo "slack_title=不明" >> $GITHUB_ENV
-            echo "slack_message=時間設定に問題があります" >> $GITHUB_ENV
+            echo "SLACK_TITLE=不明" >> $GITHUB_ENV
+            echo "SLACK_MESSAGE=時間設定に問題があります" >> $GITHUB_ENV
           fi
 
       - name: Slack Notification on Success
         uses: rtCamp/action-slack-notify@v2
         with:
-          title: ${{ env.slack_title }}
-          text: ${{ env.slack_message }}
+          SLACK_TITLE: ${{ env.SLACK_TITLE }}
+          SLACK_MESSAGE: ${{ env.SLACK_MESSAGE }}
         if: ${{ success() }}
 
       - name: Slack Notification on Failure
         uses: rtCamp/action-slack-notify@v2
         with:
-          title: "失敗"
-          text: "送信に失敗しました"
+          SLACK_TITLE: "失敗"
+          SLACK_MESSAGE: "送信に失敗しました"
         if: ${{ failure() }}

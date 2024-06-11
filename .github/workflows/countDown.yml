@@ -1,0 +1,25 @@
+name: Countdown to October 25
+on:
+  schedule:
+    - cron: "0 0 * * *"
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Calculate days until October 25
+        id: calculate_days
+        run: |
+          TODAY=$(date +%Y-%m-%d)
+          TARGET_DATE="2024-10-25"
+          DIFF=$((($date -d $TARGET_DATE +%s) - $(date -d $TODAY +%s)) / 86400)
+          echo "days_remaining=$DIFF" >> $GITHUB_ENV
+      - name: Send notification to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK}}
+          DAYS_REMAINING: ${{env.days_remaining}}
+        run: |
+          if[ "$DAYS_REMAINING -ge 0 ]; then
+            curl -X POST -H 'Content-type: application/json' --data '{"text": "10月25日まであと '" $DAYS_REMAINING"'日です。"}' $SLACK_WEBHOOK_URL
+          else
+            curl -X POST -H 'Content-type: application/json' --data '{"text": "10月25日を過ぎました。"}' $SLACK_WEBHOOK_URL
+          fi
